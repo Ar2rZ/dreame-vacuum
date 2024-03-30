@@ -1,5 +1,6 @@
 """Support for Dreame Vacuum switches."""
 from __future__ import annotations
+import asyncio
 
 from typing import Any
 from collections.abc import Callable
@@ -473,7 +474,7 @@ SWITCHES: tuple[DreameVacuumSwitchEntityDescription, ...] = (
     ),
 )
 
-
+@asyncio.coroutine
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: ConfigEntry,
@@ -517,15 +518,18 @@ class DreameVacuumSwitchEntity(DreameVacuumEntity, SwitchEntity):
     def _handle_coordinator_update(self) -> None:
         self._attr_is_on = bool(self.native_value)
         super()._handle_coordinator_update()
-
+        
+    @asyncio.coroutine
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn off the Dreame Vacuum sync receive switch."""
         await self.async_set_state(0)
-
+        
+    @asyncio.coroutine
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn on the Dreame Vacuum sync receive switch."""
         await self.async_set_state(1)
-
+        
+    @asyncio.coroutine
     async def async_set_state(self, state) -> None:
         """Turn on or off the Dreame Vacuum sync receive switch."""
         if not self.available:
