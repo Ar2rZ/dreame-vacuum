@@ -187,7 +187,7 @@ CONSUMABLE_RESET_ACTION = {
     CONSUMABLE_DIRTY_WATER_TANK: DreameVacuumAction.RESET_DIRTY_WATER_TANK,
 }
 
-
+@asyncio.coroutine
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: ConfigEntry,
@@ -722,31 +722,38 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
     def available(self) -> bool:
         """Return True if entity is available."""
         return self._attr_available and self.device.device_connected
-
+        
+    @asyncio.coroutine
     async def async_locate(self, **kwargs) -> None:
         """Locate the vacuum cleaner."""
         await self._try_command("Unable to call locate: %s", self.device.locate)
-
+        
+    @asyncio.coroutine
     async def async_start(self) -> None:
         """Start or resume the cleaning task."""
         await self._try_command("Unable to call start: %s", self.device.start)
 
+    @asyncio.coroutine
     async def async_start_pause(self) -> None:
         """Start or resume the cleaning task."""
         await self._try_command("Unable to call start_pause: %s", self.device.start_pause)
 
+    @asyncio.coroutine
     async def async_stop(self, **kwargs) -> None:
         """Stop the vacuum cleaner."""
         await self._try_command("Unable to call stop: %s", self.device.stop)
 
+    @asyncio.coroutine
     async def async_pause(self) -> None:
         """Pause the cleaning task."""
         await self._try_command("Unable to call pause: %s", self.device.pause)
 
+    @asyncio.coroutine
     async def async_return_to_base(self, **kwargs) -> None:
         """Set the vacuum cleaner to return to the dock."""
         await self._try_command("Unable to call return_to_base: %s", self.device.return_to_base)
-
+    
+    @asyncio.coroutine
     async def async_clean_zone(self, zone, repeats=1, suction_level="", water_volume="") -> None:
         await self._try_command(
             "Unable to call clean_zone: %s",
@@ -757,6 +764,7 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
             water_volume,
         )
 
+    @asyncio.coroutine
     async def async_clean_segment(self, segments, repeats=1, suction_level="", water_volume="") -> None:
         """Clean selected segments."""
         await self._try_command(
@@ -768,6 +776,7 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
             water_volume,
         )
 
+    @asyncio.coroutine
     async def async_clean_spot(self, points, repeats=1, suction_level="", water_volume="") -> None:
         """Clean 1.5 square meters area of selected points."""
         await self._try_command(
@@ -779,15 +788,18 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
             water_volume,
         )
 
+    @asyncio.coroutine
     async def async_goto(self, x, y) -> None:
         """Go to a point and take pictures around."""
         if x is not None and y is not None and x != "" and y != "":
             await self._try_command("Unable to call go_to: %s", self.device.go_to, x, y)
 
+    @asyncio.coroutine
     async def async_follow_path(self, points="") -> None:
         """Start a survaliance job."""
         await self._try_command("Unable to call follow_path: %s", self.device.follow_path, points)
 
+    @asyncio.coroutine
     async def async_set_restricted_zone(self, walls="", zones="", no_mops="") -> None:
         """Create restricted zone."""
         await self._try_command(
@@ -798,6 +810,7 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
             no_mops,
         )
 
+    @asyncio.coroutine
     async def async_set_carpet_area(self, carpets="", ignored_carpets="") -> None:
         """Create or update carpet areas."""
         await self._try_command(
@@ -807,6 +820,7 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
             ignored_carpets,
         )
 
+    @asyncio.coroutine
     async def async_set_pathway(self, pathways="") -> None:
         """Create or update pathways."""
         await self._try_command(
@@ -815,6 +829,7 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
             pathways,
         )
 
+    @asyncio.coroutine
     async def async_set_predefined_points(self, points="") -> None:
         """Create or update predefined coordinates on the map."""
         await self._try_command(
@@ -823,6 +838,7 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
             points,
         )
 
+    @asyncio.coroutine
     async def async_remote_control_move_step(self, rotation: int = 0, velocity: int = 0, prompt: bool | None = None) -> None:
         """Remote control the robot."""
         await self._try_command(
@@ -833,6 +849,7 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
             prompt
         )
 
+    @asyncio.coroutine
     async def async_set_fan_speed(self, fan_speed, **kwargs) -> None:
         """Set fan speed."""
         if self.device.status.cruising:
@@ -863,22 +880,27 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
 
         await self._try_command("Unable to set fan speed: %s", self.device.set_suction_level, fan_speed)
 
+    @asyncio.coroutine
     async def async_select_map(self, map_id) -> None:
         """Switch selected map."""
         await self._try_command("Unable to switch to selected map: %s", self.device.set_selected_map, map_id)
 
+    @asyncio.coroutine
     async def async_delete_map(self, map_id=None) -> None:
         """Delete a map."""
         await self._try_command("Unable to delete map: %s", self.device.delete_map, map_id)
 
+    @asyncio.coroutine
     async def async_save_temporary_map(self) -> None:
         """Save the temporary map."""
         await self._try_command("Unable to save map: %s", self.device.save_temporary_map)
 
+    @asyncio.coroutine
     async def async_discard_temporary_map(self) -> None:
         """Discard the temporary map."""
         await self._try_command("Unable to discard temporary map: %s", self.device.discard_temporary_map)
 
+    @asyncio.coroutine
     async def async_replace_temporary_map(self, map_id=None) -> None:
         """Replace the temporary map with another saved map."""
         await self._try_command(
@@ -887,10 +909,12 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
             map_id,
         )
 
+    @asyncio.coroutine
     async def async_request_map(self) -> None:
         """Request new map."""
         await self._try_command("Unable to call request_map: %s", self.device.request_map)
 
+    @asyncio.coroutine
     async def async_rename_map(self, map_id, map_name="") -> None:
         """Rename a map"""
         if map_name != "":
@@ -901,6 +925,7 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
                 map_name,
             )
 
+    @asyncio.coroutine
     async def async_restore_map(self, recovery_map_index, map_id=None) -> None:
         """Restore a map"""
         if recovery_map_index and recovery_map_index != "":
@@ -911,6 +936,7 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
                 map_id,
             )
 
+    @asyncio.coroutine
     async def async_restore_map_from_file(self, file_url, map_id=None) -> None:
         """Restore a map from file"""
         if file_url and file_url != "":
@@ -921,6 +947,7 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
                 map_id,
             )
 
+    @asyncio.coroutine
     async def async_backup_map(self, map_id=None) -> None:
         """Backup a map"""
         await self._try_command(
@@ -929,6 +956,7 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
             map_id,
         )
 
+    @asyncio.coroutine
     async def async_rename_segment(self, segment_id, segment_name="") -> None:
         """Rename a segment"""
         if segment_name != "":
@@ -940,6 +968,7 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
                 segment_name,
             )
 
+    @asyncio.coroutine
     async def async_merge_segments(self, map_id=None, segments=None) -> None:
         """Merge segments"""
         if segments is not None:
@@ -950,6 +979,7 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
                 segments,
             )
 
+    @asyncio.coroutine
     async def async_split_segments(self, map_id=None, segment=None, line=None) -> None:
         """Split segments"""
         if segment is not None and line is not None:
@@ -961,6 +991,7 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
                 line,
             )
 
+    @asyncio.coroutine
     async def async_set_cleaning_sequence(self, cleaning_sequence) -> None:
         """Set cleaning sequence"""
         if cleaning_sequence != "" and cleaning_sequence is not None:
@@ -970,6 +1001,7 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
                 cleaning_sequence,
             )
 
+    @asyncio.coroutine
     async def async_set_custom_cleaning(
         self, segment_id, suction_level, water_volume, repeats, cleaning_mode=None
     ) -> None:
@@ -994,6 +1026,7 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
                 cleaning_mode,
             )
 
+    @asyncio.coroutine
     async def async_install_voice_pack(self, lang_id, url, md5, size, **kwargs) -> None:
         """install a custom language pack"""
         await self._try_command(
@@ -1005,10 +1038,12 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
             size,
         )
 
+    @asyncio.coroutine
     async def async_send_command(self, command: str, params, **kwargs) -> None:
         """Send a command to a vacuum cleaner."""
         await self._try_command("Unable to call send_command: %s", self.device.send_command, command, params)
 
+    @asyncio.coroutine
     async def async_reset_consumable(self, consumable: str) -> None:
         """Reset consumable"""
         action = CONSUMABLE_RESET_ACTION.get(consumable)
@@ -1019,6 +1054,7 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
                 action,
             )
 
+    @asyncio.coroutine
     async def async_rename_shortcut(self, shortcut_id, shortcut_name) -> None:
         """Rename a shortcut"""
         if shortcut_name and shortcut_name != "":
@@ -1029,6 +1065,7 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
                 shortcut_name,
             )
 
+    @asyncio.coroutine
     async def async_set_obstacle_ignore(self, x, y, obstacle_ignored) -> None:
         """Set obstacle ignore status"""
         if x is not None and x != "" and y is not None and y != "":
@@ -1040,6 +1077,7 @@ class DreameVacuum(DreameVacuumEntity, StateVacuumEntity):
                 obstacle_ignored,
             )
 
+    @asyncio.coroutine
     async def async_set_router_position(self, x, y) -> None:
         """Set router position on current map"""
         if x is not None and x != "" and y is not None and y != "":
