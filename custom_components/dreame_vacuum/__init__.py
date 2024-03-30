@@ -1,4 +1,5 @@
 """The Dreame Vacuum component."""
+import asyncio
 from __future__ import annotations
 import traceback
 from homeassistant.config_entries import ConfigEntry
@@ -20,7 +21,7 @@ PLATFORMS = (
     Platform.TIME,
 )
 
-
+@asyncio.coroutine
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Dreame Vacuum from a config entry."""
     coordinator = DreameVacuumDataUpdateCoordinator(hass, entry=entry)
@@ -46,7 +47,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
-
+@asyncio.coroutine
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload Dreame Vacuum config entry."""
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
